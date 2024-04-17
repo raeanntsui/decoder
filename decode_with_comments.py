@@ -1,28 +1,44 @@
-def decode(message_file):
-    with open("coding_qual_input.txt", "r") as file:
+def decode(message_file: str) -> str:
+    with open(message_file, "r") as file:
         lines = file.readlines()
-        # print(lines)
+        separated_lines = sorted(lines, key=lambda string:int(string.split()[0]))
+        refined_separated_lines = [item.strip() for item in separated_lines]
+ 
+        # print("refined_separated_lines", refined_separated_lines)
+        # refined_separated_lines => ['1 down', '2 each', '3 dont']
 
-        sorted_lines = sorted(lines, key=lambda string:int(string.split()[0]))
-        # print(sorted_lines)
-
-        # remove the /n from each item in the sorted_lines array
-        refined_sorted_lines = [item.strip() for item in sorted_lines]
-        # print(refined_sorted_lines)
-
-        sorted_lines_object = {}
-        for item in refined_sorted_lines: 
+        line_code_dict = {}
+        for item in refined_separated_lines: 
             key, value = item.split()
-            sorted_lines_object[int(key)] = value
-        print(sorted_lines_object)
-            
-        # print("length of the object", len(sorted_lines_object))
-        step = 2
-        start_point = 1
-        end_point = len(sorted_lines_object)
-        keys_to_select = range(start_point, end_point + 1, step)
-        result = ' '.join(sorted_lines_object[key] for key in keys_to_select)
-        print(result)
+            line_code_dict[int(key)] = value
 
+        # print("line code dict", line_code_dict)
+        # line_code_dict => {1: 'down', 2: 'each', 3: 'dont'}
 
-decode("coding_qual_input.txt")
+        size = len(line_code_dict) # determine length of line_code_dict => 300
+        target_words_arr = []
+
+        row = 1
+        current_last_index = 1
+        while current_last_index < size:
+            """
+            1            row 1, last_index = 1 down
+            2 3          row 2, last_index = 3  (1 + row 2) dont
+            4 5 6        row 3, last_index = 6  (3 + row 3) nine
+            7 8 9 10     row 4, last_index = 10 (6 + row 4) lot
+            """
+            target_words_arr.append(line_code_dict[current_last_index])
+            row += 1
+            current_last_index += row
+
+        if current_last_index == size:
+            target_words_arr.append(line_code_dict[current_last_index])
+        else:
+            # case where pyramid does not fill all the way up in the last row
+            # we can add the last digit of the row
+            target_words_arr.append(line_code_dict[size])
+
+        # print("target array before join", target_words_arr) 
+        # ['down', 'dont', 'nine', ...]
+        return " ".join(target_words_arr) 
+print(decode("coding_qual_input.txt"))

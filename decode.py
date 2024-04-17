@@ -1,25 +1,28 @@
-def decode(message_file):
-    with open("coding_qual_input.txt", "r") as file:
+def decode(message_file: str) -> str:
+    with open(message_file, "r") as file:
         lines = file.readlines()
         separated_lines = sorted(lines, key=lambda string:int(string.split()[0]))
         refined_separated_lines = [item.strip() for item in separated_lines]
-        
-        separated_lines_object = {}
+
+        line_code_dict = {}
         for item in refined_separated_lines: 
             key, value = item.split()
-            separated_lines_object[int(key)] = value
-        prestart = None
-        step = 1
-        start_point = 1
-        end_point = len(separated_lines_object)
-        # keys_to_select = range(start_point, end_point + 1, step)
-        keys = separated_lines_object.keys()
-        # print(keys)
-        for key in keys:
-            if prestart is not None:
-                
-        # result = ' '.join(separated_lines_object[key] for key in keys_to_select)
-        # print(result)
+            line_code_dict[int(key)] = value
 
+        size = len(line_code_dict)
+        target_words_arr = []
 
-decode("coding_qual_input.txt")
+        row = 1
+        current_last_index = 1
+        while current_last_index < size:
+            target_words_arr.append(line_code_dict[current_last_index])
+            row += 1
+            current_last_index += row
+
+        if current_last_index == size:
+            target_words_arr.append(line_code_dict[current_last_index])
+        else:
+            target_words_arr.append(line_code_dict[size])
+
+        return " ".join(target_words_arr) 
+print(decode("coding_qual_input.txt"))
