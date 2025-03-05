@@ -12,4 +12,7 @@ function isPalindrome(x) {
   return true;
 }
 
-let x = 121;
+isPalindrome(121);
+isPalindrome(1243431);
+isPalindrome(1221);
+isPalindrome(121121);
